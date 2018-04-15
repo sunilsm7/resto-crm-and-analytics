@@ -1,13 +1,17 @@
 from __future__ import unicode_literals
+from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 
 # Create your models here.
+User = settings.AUTH_USER_MODEL
+
 
 CLIENT_STATUS = (
     ('A', 'Active'),
     ('I', 'Inactive'),
 )
+
 
 # change MasterCustomer to MasterClient and all references
 class MasterClient(models.Model):
@@ -25,6 +29,7 @@ class MasterClient(models.Model):
     class Meta:
         verbose_name_plural = "01 Master Client"
 
+
 class MasterRestaurant(models.Model):
     restaurant_id = models.AutoField(primary_key=True)
     restaurant_name = models.CharField(max_length=100)
@@ -35,7 +40,8 @@ class MasterRestaurant(models.Model):
 
     class Meta:
         verbose_name_plural = "02 Master Restaurant"
-        
+
+
 class MasterPremise(models.Model):
     premise_id = models.AutoField(primary_key=True)
     client_id = models.ForeignKey(MasterClient)
@@ -51,6 +57,7 @@ class MasterPremise(models.Model):
     class Meta:
         verbose_name_plural = "03 Master Premise"
 
+
 class PremiseSections(models.Model):
     section_id = models.AutoField(primary_key=True)
     premise_id = models.ForeignKey(MasterPremise)
@@ -63,18 +70,21 @@ class PremiseSections(models.Model):
     class Meta:
         verbose_name_plural = "04 Master Premise Sections"
 
+
 class MasterDevice(models.Model):
     device_id = models.AutoField(primary_key=True)
     device_name = models.CharField(max_length=100)
     premise_id = models.ForeignKey(MasterPremise)
     device_type = models.CharField(max_length=50)
-    device_assigned_to = models.BigIntegerField() # refer to user model from settings.
+    device_assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,  blank=True, null=True, related_name="waiter")
 
     def __str__(self):
         return '%s ' % (self.device_name)
 
     class Meta:
         verbose_name_plural = "05 Master Device"
+
 
 #  change it ClientConfiguration
 class ClientConfiguration(models.Model):
@@ -93,6 +103,7 @@ class ClientConfiguration(models.Model):
 
     class Meta:
         verbose_name_plural = "06 Client Configurations"
+
 
 # change it ClientRoles
 class ClientRoles(models.Model):
@@ -122,6 +133,7 @@ class MasterClientInvoice(models.Model):
     
     class Meta:
         verbose_name_plural = "08 Client Invoices"
+
 
 # ClientPayments
 class ClientPayments(models.Model):
@@ -156,10 +168,12 @@ class ClientAccount(models.Model):
     class Meta:
         verbose_name_plural = "10 Client Account"
 
+
 # make it MenuCategory
 class MenuCategory(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=100, blank=True, null=True)
+    parent 	= models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name='sub_category')
     category_image = models.CharField(max_length=100, blank=True, null=True)
     premise_id = models.ForeignKey(MasterPremise)
 
@@ -208,6 +222,7 @@ class TableAttributes(models.Model):
     table_id = models.ForeignKey(MasterTable)
     table_attribute_value = models.CharField(max_length=100)
     table_status = models.CharField(max_length=50)
+    
     def __str__(self):
         return '%s %s' % (self.table_attribute_id,self.table.attribute_value)
 
@@ -271,7 +286,7 @@ class ReservationQueue(models.Model):
 # Table Availability
 class TableAvailability(models.Model):
     tbl_availability_id = models.AutoField(primary_key=True)
-    table_id = models.ForeignKey(MasterTable) # one-to-one relationship
+    table_id = models.OneToOneField(MasterTable, null=True, blank=True)
     tbl_availability_date = models.DateField()
     tbl_availability_status = models.CharField(max_length=15)
     tbl_availability_start_time = models.TimeField()
@@ -316,6 +331,7 @@ class OrderDetails(models.Model):
     class Meta:
         verbose_name_plural = "20 Order Details"
 
+
 # Refactor Invoices according to GST and service charges if any.
 class MasterInvoice(models.Model):
     invoice_id = models.AutoField(primary_key=True)
@@ -344,6 +360,7 @@ class InvoiceDetails(models.Model):
     class Meta:
         verbose_name_plural = "22 Client Invoice Details"
 
+
 # CustomerPayments
 class CustomerPayments(models.Model):
     payment_id = models.AutoField(primary_key=True)
@@ -362,6 +379,7 @@ class CustomerPayments(models.Model):
     class Meta:
        verbose_name_plural = "23 Customer Payments"
 
+
 # Customer Feedback
 class CustomerFeedback(models.Model):
     feedback_id = models.AutoField(primary_key=True)
@@ -377,6 +395,7 @@ class CustomerFeedback(models.Model):
     class Meta:
        verbose_name_plural = "24 Customer Feedback"
         
+
 # change customer to client
 class TransactionLog(models.Model):
     transaction_id = models.AutoField(primary_key=True)
@@ -395,6 +414,7 @@ class TransactionLog(models.Model):
 
     class Meta:
        verbose_name_plural = "25 Transaction Log"
+
 
 # change to CustomerAnalytics
 class CustomerAnalytics(models.Model):
