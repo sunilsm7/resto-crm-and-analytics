@@ -18,13 +18,21 @@ from django.conf.urls.static import static
 
 from django.contrib import admin
 from django.urls import path, re_path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
 from restaurant.views import HomeView
+from menus.api import views as menus_views
+
+router = DefaultRouter()
+router.register(r'category', menus_views.MenuCategoryViewSet)
+router.register(r'category/item', menus_views.MenuItemViewSet)
+
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     re_path(r'^api/auth/login/$', obtain_jwt_token, name='api-login'),
+    re_path(r'^api/', include(router.urls)),
     path('admin/', admin.site.urls),
 ]
 
