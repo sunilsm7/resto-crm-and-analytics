@@ -2,9 +2,6 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
-from menus.models import MenuItem
-from reservations.models import MasterTable, Customer
-from orders.models import MasterOrder
 
 # Create your models here.
 User = settings.AUTH_USER_MODEL
@@ -183,19 +180,3 @@ class TransactionLog(models.Model):
 
     class Meta:
        verbose_name_plural = "Transaction Log"
-
-
-class CustomerAnalytics(models.Model):
-    analytics_id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_analytics')
-    premise = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_analytics')
-    analytics_attribute = models.CharField(max_length=50, blank=True, null=True)
-    attribute_value = models.CharField(max_length=50, blank=True, null=True)
-    created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    last_modified_date = models.DateTimeField(auto_now=True, blank=True, null=True)
-    
-    def __str__(self):
-        return f'Analytics Attribute : {self.analytics_attribute} Attribute Value :{self.attribute_value}'
-
-    class Meta:
-        verbose_name_plural = "Customer Analytics"

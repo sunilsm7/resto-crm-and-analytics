@@ -43,7 +43,7 @@ class OrderDetails(models.Model):
     item_id = models.ForeignKey(MenuItem, on_delete=models.CASCADE,related_name='ordered_item')
     product_quantity = models.IntegerField()
     order_time = models.DateTimeField()
-    item_delivery_status = models.CharField(max_length=30, choices=DELIVERY_STATUS,related_name='item_delivery_status')
+    item_delivery_status = models.CharField(max_length=30, choices=DELIVERY_STATUS)
 
     def __str__(self):
         return f'Order ID : {self.order_id} Item ID : {self.item_id}'

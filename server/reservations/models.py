@@ -39,8 +39,8 @@ class MasterTable(models.Model):
     table_id = models.AutoField(primary_key=True)
     table_name = models.CharField(max_length=100)
     table_type = models.CharField(max_length=100)
-    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_name')
-    section_id = models.ForeignKey(PremiseSections, on_delete=models.CASCADE, related_name='section_name')
+    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='table_premise')
+    section_id = models.ForeignKey(PremiseSections, on_delete=models.CASCADE, related_name='table_section')
 
     def __str__(self):
         return f'Table Name : {self.table_name}'
@@ -51,7 +51,7 @@ class MasterTable(models.Model):
 
 class TableAttributes(models.Model):
     table_attribute_id = models.AutoField(primary_key=True)
-    table = models.ForeignKey(MasterTable, on_delete=models.CASCADE, related_name='table_id')
+    table = models.ForeignKey(MasterTable, on_delete=models.CASCADE, related_name='table_attributes')
     table_attribute_value = models.CharField(max_length=100)
     table_status = models.CharField(max_length=50)
     
@@ -88,7 +88,7 @@ class ReservationQueue(models.Model):
         
     reservation_queue_id = models.AutoField(primary_key=True)
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_in_queue')
-    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_name')
+    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='reservation_premise')
     seating_preference = models.ForeignKey(PremiseSections, on_delete=models.CASCADE, related_name='pref_section')
     table_id = models.ForeignKey(MasterTable, on_delete=models.CASCADE, default=None, blank=False, related_name='reserved_table')
     reservation_status = models.CharField(max_length=10,choices=RESERVATION_STATUS, default='Available')
@@ -105,3 +105,19 @@ class ReservationQueue(models.Model):
 
     class Meta:
         verbose_name_plural = "Reservations"
+
+
+class CustomerAnalytics(models.Model):
+    analytics_id = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_analytics')
+    premise = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_analytics')
+    analytics_attribute = models.CharField(max_length=50, blank=True, null=True)
+    attribute_value = models.CharField(max_length=50, blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    last_modified_date = models.DateTimeField(auto_now=True, blank=True, null=True)
+    
+    def __str__(self):
+        return f'Analytics Attribute : {self.analytics_attribute} Attribute Value :{self.attribute_value}'
+
+    class Meta:
+        verbose_name_plural = "Customer Analytics"
