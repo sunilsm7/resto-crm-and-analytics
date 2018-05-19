@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from restaurant.models import MasterPremise,PremiseSections
+from restaurant.models import MasterPremise, PremiseSections
 User = settings.AUTH_USER_MODEL
 # Create your models here.
 
@@ -10,7 +10,7 @@ class Customer(models.Model):
     mobile_number = models.CharField(max_length=15)
     customer_name = models.CharField(max_length=50, blank=True, null=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
-    age = models.IntegerField(db_column='Age', blank=True, null=True) 
+    age = models.IntegerField(db_column='Age', blank=True, null=True)
     premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='customer_premise')
 
     def __str__(self):
@@ -20,12 +20,27 @@ class Customer(models.Model):
         verbose_name_plural = "Customer"
 
 
+class CustomerDetails(models.Model):
+    customer_details_id = models.AutoField(primary_key=True)
+    customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_details')
+    customer_attribute = models.CharField(max_length=50, blank=True, null=True)
+    attribute_value = models.CharField(max_length=50, blank=True, null=True)
+    attribute_status = models.CharField(max_length=10, blank=True, null=True)
+    last_update_date = models.DateTimeField()
+    
+    def __str__(self):
+        return f'Customer Attribute : {self.customer_attribute} Attribute Value : {self.attribute_value}'
+
+    class Meta:
+        verbose_name_plural = "Customer Details"
+
+
 class MasterTable(models.Model):
     table_id = models.AutoField(primary_key=True)
     table_name = models.CharField(max_length=100)
     table_type = models.CharField(max_length=100)
-    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE,related_name='premise_name')
-    section_id = models.ForeignKey(PremiseSections, on_delete=models.CASCADE,related_name='section_name')
+    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_name')
+    section_id = models.ForeignKey(PremiseSections, on_delete=models.CASCADE, related_name='section_name')
 
     def __str__(self):
         return f'Table Name : {self.table_name}'
@@ -36,7 +51,7 @@ class MasterTable(models.Model):
 
 class TableAttributes(models.Model):
     table_attribute_id = models.AutoField(primary_key=True)
-    table = models.ForeignKey(MasterTable, on_delete=models.CASCADE,related_name='table_id')
+    table = models.ForeignKey(MasterTable, on_delete=models.CASCADE, related_name='table_id')
     table_attribute_value = models.CharField(max_length=100)
     table_status = models.CharField(max_length=50)
     
@@ -56,7 +71,7 @@ class TableAvailability(models.Model):
     tbl_availability_end_time = models.TimeField()
 
     def __str__(self):
-        return f'Table ID : {self.table_id} Table Availability Status : {self.tbl_availability_status}'
+        return f'Table ID : {self.table_id} Availability Status : {self.tbl_availability_status}'
 
     class Meta:
         verbose_name_plural = "Table Availability"
@@ -80,7 +95,7 @@ class ReservationQueue(models.Model):
     reservation_for_date = models.DateField()
     reservation_start_time = models.TimeField()
     pax = models.IntegerField(blank=True, null=True)
-    reserved_by = models.ForeignKey(settings.AUTH_USER_MODEL, 
+    reserved_by = models.ForeignKey(User, 
         on_delete=models.CASCADE,  blank=True, null=True, related_name='reserved_by')
     reservation_date = models.DateTimeField(blank=True, null=True)
     reservation_type = models.CharField(max_length=10, blank=True, null=True)
@@ -90,18 +105,3 @@ class ReservationQueue(models.Model):
 
     class Meta:
         verbose_name_plural = "Reservations"
-
-
-class CustomerDetails(models.Model):
-    customer_details_id = models.AutoField(primary_key=True)
-    customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_details')
-    customer_attribute = models.CharField(max_length=50, blank=True, null=True)
-    attribute_value = models.CharField(max_length=50, blank=True, null=True)
-    attribute_status = models.CharField(max_length=10, blank=True, null=True)
-    last_update_date = models.DateTimeField()
-    
-    def __str__(self):
-        return f'Customer Attribute : {self.customer_attribute} Attribute Value : {self.attribute_value}'
-
-    class Meta:
-        verbose_name_plural = "Customer Details"

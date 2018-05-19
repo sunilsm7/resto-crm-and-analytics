@@ -10,17 +10,19 @@ User = settings.AUTH_USER_MODEL
 
 class MasterOrder(models.Model):
     ORDER_STATUS = (
-        ('Delivered','Delivered'),
-        ('Cooking','Cooking'),
+        ('Placed', 'Placed'),
         ('Pending','Pending'),
+        ('Cooking','Cooking'),
+        ('Delivered','Delivered'),
+        ('Completed', 'Completed')
         )
     order_id = models.AutoField(primary_key=True)
-    customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE,related_name='customer_order')
-    table_id = models.ForeignKey(MasterTable, on_delete=models.CASCADE,related_name='order_table')
-    device_id = models.ForeignKey(MasterDevice, on_delete=models.CASCADE,related_name='device_order')
-    served_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name='served_by')
-    order_manager = models.ForeignKey(User, on_delete=models.CASCADE,related_name='order_manager')
-    order_status = models.CharField(max_length=15,choices=ORDER_STATUS,default='Cooking')
+    customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_order')
+    table_id = models.ForeignKey(MasterTable, on_delete=models.CASCADE, related_name='order_table')
+    device_id = models.ForeignKey(MasterDevice, on_delete=models.CASCADE, related_name='device_order')
+    served_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='served_by')
+    order_manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_manager')
+    order_status = models.CharField(max_length=15,choices=ORDER_STATUS, default='Cooking')
     order_date = models.DateTimeField()
     premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE,related_name='premise_order')
 
