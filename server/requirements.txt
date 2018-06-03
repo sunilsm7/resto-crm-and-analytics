@@ -3,6 +3,7 @@ dj-database-url==0.4.2
 Django==2.0.2
 django-crispy-forms==1.6.1
 django-filter==1.1.0
+django-cors-headers==2.2.0
 djangorestframework==3.8.2
 djangorestframework-jwt==1.11.0
 gunicorn==19.7.1
