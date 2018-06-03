@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third party packages
+    'corsheaders',
     'rest_framework',
     # our apps
     'accounts',
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -135,6 +138,8 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "static_root
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn", "media_root")
+
+CORS_ORIGIN_WHITELIST = ('localhost:8080',)
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

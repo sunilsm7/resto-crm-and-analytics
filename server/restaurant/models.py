@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.conf import settings
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible # noqa
 from django.db import models
 
 # Create your models here.
@@ -14,19 +14,19 @@ CLIENT_STATUS = (
 
 
 class MasterClient(models.Model):
-    client_id           = models.AutoField(primary_key=True)
-    client_name         = models.CharField(max_length=50)
-    client_email        = models.CharField(max_length=50, blank=True, null=True)
-    client_mobile       = models.CharField(max_length=15, blank=True, null=True)
-    client_status       = models.CharField(max_length=10, choices=CLIENT_STATUS, default='A')
+    client_id = models.AutoField(primary_key=True)
+    client_name = models.CharField(max_length=50)
+    client_email = models.CharField(max_length=50, blank=True, null=True)
+    client_mobile = models.CharField(max_length=15, blank=True, null=True)
+    client_status = models.CharField(max_length=10, choices=CLIENT_STATUS, default='A')
     registration_datetime = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-    registered_by       = models.ForeignKey(User, on_delete=models.CASCADE, related_name='registered_by')
+    registered_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='registered_by')
 
     def __str__(self):
         return f'Client Name : {self.client_name}'
 
     class Meta:
-        verbose_name_plural = "Master Client"
+        verbose_name_plural = "01 Master Client"
 
 
 class MasterRestaurant(models.Model):
@@ -38,7 +38,7 @@ class MasterRestaurant(models.Model):
         return f'Restaurant Name : {self.restaurant_name}'
 
     class Meta:
-        verbose_name_plural = "Master Restaurant"
+        verbose_name_plural = "02 Master Restaurant"
 
 
 class MasterPremise(models.Model):
@@ -54,7 +54,7 @@ class MasterPremise(models.Model):
         return f'Premise Name : {self.premise_name}'
 
     class Meta:
-        verbose_name_plural = "Master Premise"
+        verbose_name_plural = "03 Master Premise"
 
 
 class PremiseSections(models.Model):
@@ -67,7 +67,7 @@ class PremiseSections(models.Model):
         return f'Section Name : {self.section_name}'
 
     class Meta:
-        verbose_name_plural = "Master Premise Sections"
+        verbose_name_plural = "04 Master Premise Sections"
 
 
 class MasterDevice(models.Model):
@@ -75,13 +75,14 @@ class MasterDevice(models.Model):
     device_name = models.CharField(max_length=100)
     premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_device')
     device_type = models.CharField(max_length=50)
-    device_assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="device_assigned")
+    device_assigned_to = models.ForeignKey(
+        User, on_delete=models.CASCADE, blank=True, null=True, related_name="device_assigned")
 
     def __str__(self):
         return f'Device Name : {self.device_name}'
 
     class Meta:
-        verbose_name_plural = "Master Device"
+        verbose_name_plural = "05 Master Device"
 
 
 class ClientConfiguration(models.Model):
@@ -96,10 +97,10 @@ class ClientConfiguration(models.Model):
     configuration_end_datetime = models.DateTimeField()
 
     def __str__(self):
-        return f'Configuration Attribute : {self.configuration_attribute} Configuration Value : {self.configuration_value}'
+        return f'Configuration Attribute : {self.configuration_attribute} Value : {self.configuration_value}'
 
     class Meta:
-        verbose_name_plural = "Client Configurations"
+        verbose_name_plural = "06 Client Configurations"
 
 
 class ClientRoles(models.Model):
@@ -112,7 +113,7 @@ class ClientRoles(models.Model):
         return f' Role Description : {self.role_description}'
 
     class Meta:
-        verbose_name_plural = "Client Roles"
+        verbose_name_plural = "07 Client Roles"
 
 
 class MasterClientInvoice(models.Model):
@@ -127,13 +128,14 @@ class MasterClientInvoice(models.Model):
         return f'Customer Invoice ID : {self.client_id}'
 
     class Meta:
-        verbose_name_plural = "Client Invoices"
+        verbose_name_plural = "08 Client Invoices"
 
 
 class ClientPayments(models.Model):
     payment_id = models.AutoField(primary_key=True)
     client_id = models.ForeignKey(MasterClient, on_delete=models.CASCADE, related_name='client_payment')
-    customer_invoice_id = models.ForeignKey(MasterClientInvoice, on_delete=models.CASCADE, related_name='client_payment_invoice')
+    customer_invoice_id = models.ForeignKey(
+        MasterClientInvoice, on_delete=models.CASCADE, related_name='client_payment_invoice')
     payment_type = models.CharField(max_length=15)
     payment_date = models.DateField()
     payment_amount = models.FloatField()
@@ -143,7 +145,7 @@ class ClientPayments(models.Model):
         return f'Payment ID : {self.payment_id} Customer Invoice ID : {self.customer_invoice_id}'
 
     class Meta:
-        verbose_name_plural = "Client Payments"
+        verbose_name_plural = "09 Client Payments"
 
 
 class ClientAccount(models.Model):
@@ -159,8 +161,8 @@ class ClientAccount(models.Model):
         return f'Account ID : {self.account_id} Customer ID : {self.client_id}'
 
     class Meta:
-        verbose_name_plural = "Client Account"
-     
+        verbose_name_plural = "10 Client Account"
+
 
 class TransactionLog(models.Model):
     transaction_id = models.AutoField(primary_key=True)
@@ -179,4 +181,4 @@ class TransactionLog(models.Model):
         return f'Transaction ID : {self.transaction_id}'
 
     class Meta:
-       verbose_name_plural = "Transaction Log"
+        verbose_name_plural = "11 Transaction Log"

@@ -1,46 +1,47 @@
 from django.db import models
 from django.conf import settings
 
-from restaurant.models import MasterPremise,MasterDevice
+from restaurant.models import MasterPremise, MasterDevice
 from menus.models import MenuItem
 from reservations.models import MasterTable, Customer
 
 User = settings.AUTH_USER_MODEL
 # Create your models here.
 
+
 class MasterOrder(models.Model):
     ORDER_STATUS = (
         ('Placed', 'Placed'),
-        ('Pending','Pending'),
-        ('Cooking','Cooking'),
-        ('Delivered','Delivered'),
+        ('Pending', 'Pending'),
+        ('Cooking', 'Cooking'),
+        ('Delivered', 'Delivered'),
         ('Completed', 'Completed')
-        )
+    )
     order_id = models.AutoField(primary_key=True)
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_order')
     table_id = models.ForeignKey(MasterTable, on_delete=models.CASCADE, related_name='order_table')
     device_id = models.ForeignKey(MasterDevice, on_delete=models.CASCADE, related_name='device_order')
     served_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='served_by')
     order_manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_manager')
-    order_status = models.CharField(max_length=15,choices=ORDER_STATUS, default='Cooking')
+    order_status = models.CharField(max_length=15, choices=ORDER_STATUS, default='Cooking')
     order_date = models.DateTimeField()
-    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE,related_name='premise_order')
+    premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_order')
 
     def __str__(self):
         return f'Order ID : {self.order_id}'
 
     class Meta:
         verbose_name_plural = "Master Order"
-        
+
 
 class OrderDetails(models.Model):
     DELIVERY_STATUS = (
-        ('Served','Served'),
-        ('Ready For Serving','ReadyForServing'),
-        )
+        ('Served', 'Served'),
+        ('Ready For Serving', 'ReadyForServing'),
+    )
     order_detail_id = models.AutoField(primary_key=True)
-    order_id = models.ForeignKey(MasterOrder, on_delete=models.CASCADE,related_name='oreder_details')
-    item_id = models.ForeignKey(MenuItem, on_delete=models.CASCADE,related_name='ordered_item')
+    order_id = models.ForeignKey(MasterOrder, on_delete=models.CASCADE, related_name='oreder_details')
+    item_id = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='ordered_item')
     product_quantity = models.IntegerField()
     order_time = models.DateTimeField()
     item_delivery_status = models.CharField(max_length=30, choices=DELIVERY_STATUS)
@@ -90,12 +91,12 @@ class CustomerPayments(models.Model):
     received_by = models.BigIntegerField()
     receipt_datetime = models.DateTimeField()
     premise_id = models.ForeignKey(MasterPremise, on_delete=models.CASCADE, related_name='premise_payment')
-   
+
     def __str__(self):
         return f'Payment ID : {self.payment_id}'
 
     class Meta:
-       verbose_name_plural = "Customer Payments"
+        verbose_name_plural = "Customer Payments"
 
 
 class CustomerFeedback(models.Model):
@@ -106,9 +107,9 @@ class CustomerFeedback(models.Model):
     feedback_scale = models.IntegerField(blank=True, null=True)
     feedback_text = models.CharField(max_length=100, blank=True, null=True)
     feedback_date = models.DateTimeField(blank=True, null=True)
-    
+
     def __str__(self):
         return f'Customer ID : {self.customer_id} Feedback : {self.feedback_text}'
 
     class Meta:
-       verbose_name_plural = "Customer Feedback"
+        verbose_name_plural = "Customer Feedback"
