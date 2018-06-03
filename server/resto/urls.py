@@ -21,11 +21,11 @@ from django.urls import path, re_path, include
 from rest_framework_jwt.views import obtain_jwt_token
 
 from restaurant.views import HomeView
-import menus
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     re_path(r'^api/auth/login/$', obtain_jwt_token, name='api-login'),
+    re_path(r'^api/restaurant/', include('restaurant.api.urls', namespace='restaurant')),
     re_path(r'^api/menus/', include('menus.api.urls', namespace='menus')),
     path('admin/', admin.site.urls),
 ]
