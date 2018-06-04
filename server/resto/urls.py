@@ -29,6 +29,7 @@ urlpatterns = [
     re_path(r'^api/reservations/', include('reservations.api.urls', namespace='reservations')),
     re_path(r'^api/menus/', include('menus.api.urls', namespace='menus')),
     re_path(r'^api/orders/', include('orders.api.urls', namespace='orders')),
+    re_path(r'^api/accounts/', include('accounts.api.urls', namespace='accounts')),
     path('admin/', admin.site.urls),
 ]
 
