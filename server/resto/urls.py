@@ -26,6 +26,7 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     re_path(r'^api/auth/login/$', obtain_jwt_token, name='api-login'),
     re_path(r'^api/restaurant/', include('restaurant.api.urls', namespace='restaurant')),
+    re_path(r'^api/reservations/', include('reservations.api.urls', namespace='reservations')),
     re_path(r'^api/menus/', include('menus.api.urls', namespace='menus')),
     path('admin/', admin.site.urls),
 ]

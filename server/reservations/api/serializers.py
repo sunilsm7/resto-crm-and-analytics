@@ -17,6 +17,12 @@ class CustomerDetailsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class MasterTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MasterTable
+        fields = '__all__'
+
+
 class TableAttributesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableAttributes
